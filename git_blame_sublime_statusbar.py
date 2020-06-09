@@ -14,7 +14,8 @@ except:
 
 class GitBlameStatusbarCommand(sublime_plugin.EventListener):
     def parse_blame(self, blame):
-        sha, file_path, user, date, time, tz_offset, *_ = blame.decode('utf-8').split()
+        sha, file_path, user, date, time, tz_offset, _ = blame.decode(
+            'utf-8').split()
 
         # Was part of the inital commit so no updates
         if file_path[0] == '(':
@@ -39,13 +40,13 @@ class GitBlameStatusbarCommand(sublime_plugin.EventListener):
                          stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             pass
-            # print("Git blame: git error {}:\n{}".format(e.returncode, e.output.decode("UTF-8")))
+            print("Git blame: git error {}:\n{}".format(
+                e.returncode, e.output.decode("UTF-8")))
         except Exception as e:
             pass
-            # print("Git blame: Unexpected error:", e)
+            print("Git blame: Unexpected error:", e)
 
     def days_between(self, d):
-        # now = datetime.strptime(datetime.now(), "%Y-%m-%d")
         now = datetime.now()
         d = datetime.strptime(d, "%Y-%m-%d")
         return abs((now - d).days)
@@ -58,11 +59,6 @@ class GitBlameStatusbarCommand(sublime_plugin.EventListener):
         output = ''
         if blame:
             sha, user, date, time = self.parse_blame(blame)
-            # try:
-            #     time = '( ' + str(self.days_between(time)) + ' days ago )'
-            # except Exception as e:
-            #     time = ''
-            #     print("Git blame: days_between ", e)
             time = ''
             output = '☞ ' + user + ' ' + time
 
